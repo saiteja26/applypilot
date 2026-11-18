@@ -1,0 +1,78 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Product Designer - Testco</title>
+<style>.select__menu{border:1px solid #ccc}.hidden{display:none}</style></head><body>
+<h1>Product Designer</h1><p>Testco is hiring. If you have applied before, thank you for applying again is not shown here.</p>
+<form id="application-form" method="post" action="/test/jobs/1/confirmation" enctype="multipart/form-data">
+ <div class="field"><label for="first_name">First Name<span class="required">*</span></label><input id="first_name" name="first_name" required></div>
+ <div class="field"><label for="last_name">Last Name<span class="required">*</span></label><input id="last_name" name="last_name" required></div>
+ <div class="field"><label for="email">Email<span class="required">*</span></label><input id="email" name="email" type="email" required></div>
+ <div class="field"><label for="country">Country*</label>
+   <div class="select__control"><div class="select__single-value" id="country-shown"></div><input id="country" role="combobox" autocomplete="off"></div>
+   <div id="country-list" role="listbox" class="select__menu hidden"></div><input type="hidden" name="country" id="country-val" required>
+ </div>
+ <div class="field"><label for="phone">Phone*</label><input id="phone" name="phone" type="tel" required></div>
+ <div class="field"><label for="candidate-location">Location (City)*</label>
+   <div class="select__control"><div class="select__single-value" id="location-shown"></div><input id="candidate-location" role="combobox" autocomplete="off" aria-required="true"></div>
+   <div id="location-list" role="listbox" class="select__menu hidden"></div><input type="hidden" name="location" id="location-val">
+ </div>
+ <div class="field"><label for="resume">Resume/CV*</label><input id="resume" name="resume" type="file" required style="display:none"><button type="button">Attach</button></div>
+ <div class="field"><label for="cover_letter">Cover Letter</label><input id="cover_letter" name="cover_letter" type="file" style="display:none"><button type="button">Attach</button></div>
+ <div class="field"><label for="q_linkedin">LinkedIn Profile</label><input id="q_linkedin" name="q_linkedin"></div>
+ <div class="field"><label id="auth-label" for="q_auth">Are you legally authorized to work in the United States?*</label>
+   <div class="select__control"><div class="select__single-value" id="auth-shown"></div><input id="q_auth" role="combobox" aria-controls="auth-list" aria-labelledby="auth-label" aria-required="true" autocomplete="off"></div>
+   <div id="auth-list" role="listbox" class="select__menu hidden"></div><input type="hidden" name="q_auth" id="q_auth_val"></div>
+ <div class="field"><label for="q_why">Why do you want to work at Testco?*</label><textarea id="q_why" name="q_why" required maxlength="500"></textarea></div>
+ <fieldset><legend>How did you hear about us?*</legend>
+   <label><input type="radio" name="hear" value="site" required> Company website</label>
+   <label><input type="radio" name="hear" value="friend"> Referral</label></fieldset>
+ <div class="field"><label for="gender">Gender</label><select id="gender" name="gender"><option value="">Select...</option><option>Male</option><option>Female</option><option>Decline To Self Identify</option></select></div>
+ <button type="submit">Submit application</button>
+</form>
+<script>
+// A tiny react-select stand-in: opens on mousedown/ArrowDown, filters on input, picks on click.
+const opts = ["Yes", "No"]; const inp = document.getElementById("q_auth"), list = document.getElementById("auth-list");
+const draw = (f="") => { list.innerHTML = ""; opts.filter(o => o.toLowerCase().includes(f.toLowerCase())).forEach(o => { const d = document.createElement("div"); d.setAttribute("role","option"); d.textContent = o;
+  d.addEventListener("click", () => { document.getElementById("auth-shown").textContent = o; document.getElementById("q_auth_val").value = o; inp.value = ""; list.classList.add("hidden"); }); list.appendChild(d); }); list.classList.remove("hidden"); };
+inp.closest(".select__control").addEventListener("mousedown", () => draw());
+inp.addEventListener("keydown", (e) => { if (e.key === "ArrowDown") draw(); if (e.key === "Escape") list.classList.add("hidden"); });
+inp.addEventListener("input", () => draw(inp.value));
+inp.addEventListener("blur", () => setTimeout(() => list.classList.add("hidden"), 150));
+const countryInput = document.getElementById("country"), countryList = document.getElementById("country-list");
+const drawCountry = (query) => { countryList.innerHTML = ""; for (const text of ["United States +1", "Canada +1"].filter(x => x.toLowerCase().includes((query || "").toLowerCase()))) {
+  const o = document.createElement("div"); o.setAttribute("role", "option"); o.textContent = text;
+  o.addEventListener("click", () => { document.getElementById("country-shown").textContent = text; document.getElementById("country-val").value = text; countryList.classList.add("hidden"); });
+  countryList.appendChild(o);
+} countryList.classList.toggle("hidden", !countryList.children.length); };
+const countryControl = countryInput.closest(".select__control");
+countryControl.addEventListener("input", (e) => drawCountry(e.target.value));
+countryControl.addEventListener("keydown", (e) => { if (e.key === "Escape") countryList.classList.add("hidden"); });
+const locationInput = document.getElementById("candidate-location"), locationList = document.getElementById("location-list");
+const drawLocation = (query) => {
+  locationList.innerHTML = "";
+  if (!query) { locationList.classList.add("hidden"); return; }
+  for (const text of ["Chicago, Illinois, United States", "Austin, Texas, United States"].filter(x => x.toLowerCase().startsWith(query.toLowerCase()))) {
+    const o = document.createElement("div"); o.setAttribute("role", "option"); o.textContent = text;
+    o.addEventListener("click", () => { document.getElementById("location-shown").textContent = text; document.getElementById("location-val").value = text; locationList.classList.add("hidden"); });
+    locationList.appendChild(o);
+  }
+  locationList.classList.toggle("hidden", !locationList.children.length);
+};
+locationInput.closest(".select__control").addEventListener("mousedown", () => drawLocation(locationInput.value));
+locationInput.addEventListener("keydown", (e) => { if (e.key === "ArrowDown") drawLocation(locationInput.value); if (e.key === "Escape") locationList.classList.add("hidden"); });
+locationInput.addEventListener("input", () => drawLocation(locationInput.value));
+document.getElementById("resume").addEventListener("change", () => {
+  for (const id of ["first_name", "last_name", "email", "country", "resume"]) {
+    const input = document.getElementById(id);
+    const replacement = input.cloneNode(true);
+    replacement.removeAttribute("data-ap-key");
+    replacement.removeAttribute("data-ap-options");
+    input.replaceWith(replacement);
+  }
+});
+// Captcha variant: first Submit shows a challenge; the second (after "solving") goes through.
+if (location.search.includes("captcha")) {
+  let shown = false;
+  document.getElementById("application-form").addEventListener("submit", (e) => {
+    if (!shown) { e.preventDefault(); shown = true; const f = document.createElement("iframe"); f.src = "https://newassets.hcaptcha.com/captcha/v1/challenge"; f.width = 300; f.height = 400; document.body.appendChild(f); }
+  });
+}
+</script></body></html>

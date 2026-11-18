@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="applypilot-token" content="__TOKEN__">
+  <title>ApplyPilot</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="brand"><span class="logo">AP</span> ApplyPilot</div>
+    <nav id="tabs">
+      <button data-tab="applications">Applications</button>
+      <button data-tab="search">Job search</button>
+      <button data-tab="profile">Profile</button>
+      <button data-tab="preferences">Preferences</button>
+      <button data-tab="stories">Stories</button>
+      <button data-tab="settings">Settings</button>
+    </nav>
+    <div id="hdr-stats" class="muted small"></div>
+  </header>
+  <main>
+    <div id="banner"></div>
+    <section id="tab-applications"></section>
+    <section id="tab-search" hidden></section>
+    <section id="tab-profile" hidden></section>
+    <section id="tab-preferences" hidden></section>
+    <section id="tab-stories" hidden></section>
+    <section id="tab-settings" hidden></section>
+  </main>
+  <div id="toast" hidden></div>
+  <script src="/app.js"></script>
+</body>
+</html>

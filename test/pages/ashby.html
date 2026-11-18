@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Ashby</title><style>.active{background:#333;color:#fff}</style></head><body>
+<div id="root">
+ <div class="ashby-application-form-autofill-uploader"><p>Autofill from resume</p><input type="file" id="autofill" style="display:none"></div>
+ <div class="ashby-application-form-container">
+ <div class="_fieldEntry_1"><label class="_heading_ _required_">Name</label><input id="_systemfield_name" name="_systemfield_name" required></div>
+ <div class="_fieldEntry_1"><label class="_heading_ _required_">Email</label><input id="_systemfield_email" type="email" name="_systemfield_email" required></div>
+ <div class="_fieldEntry_1"><label class="_heading_ _required_" for="_systemfield_resume">Resume</label><input type="file" id="_systemfield_resume" style="display:none"><button type="button">Upload File</button><div id="rname"></div></div>
+ <div class="_fieldEntry_1"><label class="_heading_ _required_">Are you comfortable working on-site 3 days a week?</label><div class="_yesno_1"><button type="button" class="yn">Yes</button><button type="button" class="yn">No</button></div></div>
+ <div class="_fieldEntry_1"><label class="_heading_" for="why">Anything else you'd like to share?</label><textarea id="why" name="why"></textarea></div>
+ <button type="button" id="sub">Submit Application</button>
+</div></div>
+<script>
+document.querySelectorAll(".yn").forEach(b => b.onclick = () => { document.querySelectorAll(".yn").forEach(x => x.classList.remove("active")); b.classList.add("active"); });
+document.getElementById("_systemfield_resume").addEventListener("change", (e) => document.getElementById("rname").textContent = e.target.files[0]?.name);
+document.getElementById("sub").onclick = () => {
+  const data = { name: document.getElementById("_systemfield_name").value, email: document.getElementById("_systemfield_email").value, resume: document.getElementById("_systemfield_resume").files[0]?.name, yesno: document.querySelector(".yn.active")?.textContent, autofill: document.getElementById("autofill").files.length };
+  fetch("/__record", { method: "POST", body: JSON.stringify(data) });
+  document.getElementById("root").innerHTML = '<div class="_successContainer_x"><h2>Thank you for applying!</h2><p>Your application was successfully submitted.</p></div>';
+};
+</script></body></html>
